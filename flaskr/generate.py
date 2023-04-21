@@ -26,7 +26,7 @@ def generate():
     url_sdo = f"{api_host_sdo}/v1/user/account"
 
     db = get_db()
-    error = None
+
     user_id = session.get('user_id')
 
     g.user = get_db().execute(
@@ -35,6 +35,7 @@ def generate():
     credits_current = g.user['credits']
 
     if request.method == 'POST':
+        error = None
         images = []
         images_dd = []
         images_sd = []
@@ -55,7 +56,7 @@ def generate():
                     )
                     db.commit()
                 except db.IntegrityError:
-                    error = "credits update error for dalle2"
+                    error_dalle2 = "credits update error for dalle2"
                 if len(res) > 0:
                     for img in res:
                         images.append(img['url'])
@@ -87,6 +88,9 @@ def generate():
             else:
                 error = "Insufficient credits!"
 
+            if error is not None:
+                flash(error)
+
         if request.form.get('SwitchCheckKS2') == 'on':
             width = int(request.form['widthOfKS2'])
             height = int(request.form['heightOfKS2'])
@@ -104,46 +108,52 @@ def generate():
                 except db.IntegrityError:
                     error = "credits update error for SK2"
 
-            else:
-                error = "Insufficient credits!"
+        else:
+            error = "Insufficient credits!"
 
-        if request.form.get('SwitchCheckDD') == 'on':
-            credits_after = credits_current - 3
-            if credits_after >= 0:
-                images_dd.append(create_image_dd(prompt))
-                credits_current = credits_after
-                try:
-                    db.execute(
-                        "UPDATE user SET credits=? WHERE username=?",
-                        (credits_current, g.user['username']),
-                    )
-                    db.commit()
-                except db.IntegrityError:
-                    error = "credits update error for DD"
+        if error is not None:
+            flash(error)
 
-            else:
-                error = "Insufficient credits!"
+    if request.form.get('SwitchCheckDD') == 'on':
+        credits_after = credits_current - 3
+        if credits_after >= 0:
+            images_dd.append(create_image_dd(prompt))
+            credits_current = credits_after
+            try:
+                db.execute(
+                    "UPDATE user SET credits=? WHERE username=?",
+                    (credits_current, g.user['username']),
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = "credits update error for DD"
 
-        # if request.form.get('SwitchCheckSDO') == 'on':
-        #
-        #     n = int(request.form['numberOfPaintingSD'])
-        #     size = request.values.get('sizeOfSD')
-        #     steps = int(request.form['stepsOfSD'])
-        #     credits_after = credits_current - n
-        #     if credits_after >= 0:
-        #         images_sd = create_image_sd(prompt, n, size, steps)
-        #         credits_current = credits_after
-        #         try:
-        #             db.execute(
-        #                 "UPDATE user SET credits=? WHERE username=?",
-        #                 (credits_current, g.user['username']),
-        #             )
-        #             db.commit()
-        #         except db.IntegrityError:
-        #             error = "credits update error for SD"
-        #
-        #     else:
-        #         error = "Insufficient credits!"
+        else:
+            error = "Insufficient credits!"
+
+        if error is not None:
+            flash(error)
+
+    # if request.form.get('SwitchCheckSDO') == 'on':
+    #
+    #     n = int(request.form['numberOfPaintingSD'])
+    #     size = request.values.get('sizeOfSD')
+    #     steps = int(request.form['stepsOfSD'])
+    #     credits_after = credits_current - n
+    #     if credits_after >= 0:
+    #         images_sd = create_image_sd(prompt, n, size, steps)
+    #         credits_current = credits_after
+    #         try:
+    #             db.execute(
+    #                 "UPDATE user SET credits=? WHERE username=?",
+    #                 (credits_current, g.user['username']),
+    #             )
+    #             db.commit()
+    #         except db.IntegrityError:
+    #             error = "credits update error for SD"
+    #
+    #     else:
+    #         error = "Insufficient credits!"
 
     g.user = get_db().execute(
         'SELECT * FROM user WHERE id = ?', (user_id,)
@@ -153,7 +163,6 @@ def generate():
 
 
 def create_image_dalle2(prompt, n, size):
-    response = []
     try:
         response = openai.Image.create(
             prompt=prompt,
@@ -170,29 +179,36 @@ def create_image_dalle2(prompt, n, size):
 
 
 def create_image_sd(prompt, num_outputs, image_dimensions, num_inference_steps, guidance_scale, negative_prompt):
-    output = replicate.run(
-        "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
-        input={"prompt": prompt,
-               "num_outputs": num_outputs,
-               "image_dimensions": image_dimensions,
-               "num_inference_steps": num_inference_steps,
-               "guidance_scale": guidance_scale,
-               "negative_prompt": negative_prompt
-               })
-
+    try:
+        output = replicate.run(
+            "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
+            input={"prompt": prompt,
+                   "num_outputs": num_outputs,
+                   "image_dimensions": image_dimensions,
+                   "num_inference_steps": num_inference_steps,
+                   "guidance_scale": guidance_scale,
+                   "negative_prompt": negative_prompt
+                   })
+    except replicate.exceptions.ModelError as e:
+        flash(e)
+        output = []
     return output
 
 
 def create_image_ks2(prompt, width, height, num_inference_steps):
     # red cat, 4k photo
-    output = replicate.run(
-        "ai-forever/kandinsky-2:601eea49d49003e6ea75a11527209c4f510a93e2112c969d548fbb45b9c4f19f",
-        input={"prompt": prompt,
-               "width": width,
-               "height": height,
-               "num_inference_steps": num_inference_steps
-               }
-    )
+    try:
+        output = replicate.run(
+            "ai-forever/kandinsky-2:601eea49d49003e6ea75a11527209c4f510a93e2112c969d548fbb45b9c4f19f",
+            input={"prompt": prompt,
+                   "width": width,
+                   "height": height,
+                   "num_inference_steps": num_inference_steps
+                   }
+        )
+    except replicate.exceptions.ModelError as e:
+        flash(e)
+        output = []
     return output
 
 
