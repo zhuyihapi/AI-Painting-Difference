@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+
+{% block content_base %}
+
+    <main class="d-flex">
+        <div class="container p-5">
+            <form class="mb-3" action="#" method="post">
+
+                <div class="mb-5">
+                    <label class="form-label">Please enter your prompt to generate a painting.</label>
+
+                    <input type="text" class="form-control" name="InputPrompt" id="InputPrompt"
+                           placeholder="A cute baby sea otter" required>
+
+                    <div id="promptHelp" class="form-text">We'll never store your prompt.</div>
+                    <!-- <button type="submit" class="btn btn-primary" id="SubmitButton">Submit</button> -->
+                </div>
+
+                <div class="mb-5">
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheckDalle"
+                               name="SwitchCheckDalle" checked>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">DALL·E 2
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheckSD"
+                               name="SwitchCheckSD" checked>
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Stable Diffusion</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheckKS2"
+                               name="SwitchCheckKS2" checked>
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Kandinsky-2</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheckDD"
+                               name="SwitchCheckDD">
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Disco Diffusion</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheckMidjounery"
+                               name="SwitchCheckMidjounery" disabled>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Midjounery</label>
+                    </div>
+
+                    <div id="promptHelp" class="form-text">Getting paintings from the selected models. Each painting
+                        will cost you 1 credits (Disco Diffusion will cost 3).
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#SwitchCheckDD').change(function () {
+                                if (this.checked == true) {
+                                    alert('The Disco Diffusion model takes around 10 minutes to generate a painting, which will cause you to wait until all the painting works is complete. Each painting from Disco Diffusion will cost 3 credits. Disco Diffusion is not recommended to select!!');
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+
+                <div class="mb-4">
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary" id="SubmitButton">Submit</button>
+
+                        <button class="btn btn-primary btn-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSetting" aria-expanded="false"
+                                aria-controls="collapseExample">
+                            Additional settings
+                        </button>
+
+                        <button type="cancel" class="btn btn-secondary disabled" id="CancelButton"
+                                name="CancelButton" hidden>Cancel
+                        </button>
+
+                        <button type="clear" class="btn btn-danger disabled" id="ClearButton"
+                                hidden>Clear
+                        </button>
+
+                    </div>
+
+                    <div class="collapse" id="collapseSetting">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                        data-bs-target="#dalle2-tab-pane" type="button" role="tab"
+                                        aria-controls="home-tab-pane" aria-selected="true">DALL·E 2
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#sd-tab-pane" type="button" role="tab"
+                                        aria-controls="profile-tab-pane" aria-selected="false">Stable Diffusion
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                        data-bs-target="#ks2-tab-pane" type="button" role="tab"
+                                        aria-controls="contact-tab-pane" aria-selected="false">Kandinsky-2
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link disabled" id="contact-tab" data-bs-toggle="tab"
+                                        data-bs-target="#dd-tab-pane" type="button" role="tab"
+                                        aria-controls="contact-tab-pane" aria-selected="false">Disco diffusion
+                                </button>
+                            </li>
+
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+                            {#  Dalle2 Setting#}
+                            <div class="tab-pane fade show active" id="dalle2-tab-pane" role="tabpanel"
+                                 aria-labelledby="dalle2-tab" tabindex="0">
+                                <div class="row g-1 mb-3 mt-3">
+                                    <div class="input-group col">
+                                                                <span class="input-group-text"
+                                                                      id="inputGroup-sizing-default">Image size</span>
+                                        <select class="form-select form-select" aria-label=".form-select example"
+                                                name="sizeOfDalle2">
+                                            <option value="256x256">256x256</option>
+                                            <option value="512x512">512x512</option>
+                                            <option value="1024x1024" selected>1024x1024</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row g-2">
+                                    <div class="input-group mb-3 col">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Number</span>
+                                        <input type="text" class="form-control" aria-label="Sizing example input"
+                                               aria-describedby="inputGroup-sizing-default"
+                                               name="numberOfPaintingDalle2" value="1">
+                                    </div>
+                                </div>
+                            </div>
+                            {#  SD Setting#}
+                            <div class="tab-pane fade" id="sd-tab-pane" role="tabpanel"
+                                 aria-labelledby="profile-tab" tabindex="0">
+                                <div class="row g-1 mt-3">
+                                    <div class="input-group col">
+                                                                <span class="input-group-text"
+                                                                      id="inputGroup-sizing-default">Image size</span>
+                                        <select class="form-select form-select" aria-label=".form-select example"
+                                                name="sizeOfSD">
+                                            <option value="512x512">512x512</option>
+                                            <option value="768x768" selected>768x768</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row g-2 mt-2">
+                                    <div class="input-group mb-3 col">
+                                        <span class="input-group-text"
+                                              id="inputGroup-sizing-default">Number of images</span>
+                                        <input type="text" class="form-control" aria-label="Sizing example input"
+                                               aria-describedby="inputGroup-sizing-default" name="numberOfPaintingSD"
+                                               value="1">
+                                    </div>
+                                </div>
+
+                                <div class="row g-2">
+                                    <div class="input-group col">
+                                        <span class="input-group-text"
+                                              id="inputGroup-sizing-default">Number of inference steps</span>
+                                        <input type="text" class="form-control" name="num_inference_steps_sd"
+                                               id="num_inference_steps_sd"
+                                               title="Number of denoising steps" value="50">
+                                    </div>
+                                    <div class="input-group col">
+                                        <span class="input-group-text"
+                                              id="inputGroup-sizing-default">Guidance scale</span>
+                                        <input type="text" class="form-control" name="guidance_scale_sd"
+                                               id="guidance_scale_sd"
+                                               title="Scale for classifier-free guidance" value="7.5">
+                                    </div>
+                                </div>
+                                <div class="input-group col mt-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">Negative prompt</span>
+                                    <input type="text" class="form-control" name="negative_prompt_sd"
+                                           id="negative_prompt_sd"
+                                           title="Specify things to not see in the output" value="">
+                                </div>
+
+                            </div>
+                            {# KS2 Setting#}
+                            <div class="tab-pane fade" id="ks2-tab-pane" role="tabpanel"
+                                 aria-labelledby="profile-tab" tabindex="0">
+                                <div class="row g-2 mt-3">
+                                    <div class="input-group col">
+                                                                <span class="input-group-text"
+                                                                      id="inputGroup-sizing-default">Width</span>
+                                        <select class="form-select form-select"
+                                                aria-label=".form-select example"
+                                                name="widthOfKS2">
+                                            <option value="256">256</option>
+                                            <option value="288">288</option>
+                                            <option value="432">432</option>
+                                            <option value="512" selected>512</option>
+                                            <option value="576">576</option>
+                                            <option value="768">768</option>
+                                            <option value="1024">1024</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group col">
+                                                                <span class="input-group-text"
+                                                                      id="inputGroup-sizing-default">Height</span>
+                                        <select class="form-select form-select"
+                                                aria-label=".form-select example"
+                                                name="heightOfKS2">
+                                            <option value="256">256</option>
+                                            <option value="288">288</option>
+                                            <option value="432">432</option>
+                                            <option value="512" selected>512</option>
+                                            <option value="576">576</option>
+                                            <option value="768">768</option>
+                                            <option value="1024">1024</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mt-3 mb-3">
+                                    <div class="input-group mb-3 col">
+                                                <span class="input-group-text"
+                                                      id="inputGroup-sizing-default">Steps</span>
+                                        <input type="text" class="form-control"
+                                               aria-label="Sizing example input"
+                                               aria-describedby="inputGroup-sizing-default" name="stepsOfKS2"
+                                               value="50">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="dd-tab-pane" role="tabpanel"
+                                 aria-labelledby="contact-tab" tabindex="0">
+                                <div class="input-group mt-3 col">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">Height</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                           aria-describedby="inputGroup-sizing-default">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+
+            <div id="ImageMainDiv" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for category, message in messages %}
+                                <li class="{{ category }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Dalle2 images -->
+                {% for image in images %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+
+                            <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                                 src="{{ image }}" download="{{ image }}" data-action="zoom">
+
+                            <div class="card-body">
+                                <p class="card-text">{{ prompt }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-body-secondary">DALL·E 2</small>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                disabled>Vary
+                                        </button>
+                                        <a href="{{ image }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- dd images -->
+                {% for image in images_dd %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+
+                            <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                                 src="{{ image }}" data-action="zoom">
+
+                            <div class="card-body">
+                                <p class="card-text">{{ prompt }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-body-secondary">Disco Diffusion</small>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                disabled>Vary
+                                        </button>
+                                        <a href="{{ image }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- sd images -->
+                {% for image in images_sd %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+
+                            <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                                 src="{{ image }}" data-action="zoom">
+
+                            <div class="card-body">
+                                <p class="card-text">{{ prompt }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-body-secondary">stability.ai / Stable Diffusion</small>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                disabled>Vary
+                                        </button>
+                                        <a href="{{ image }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- ks2 images -->
+                {% for image in images_ks2 %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+
+                            <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                                 src="{{ image }}" data-action="zoom">
+
+                            <div class="card-body">
+                                <p class="card-text">{{ prompt }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-body-secondary">ai-forever / Kandinsky-2</small>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                disabled>Vary
+                                        </button>
+                                        <a href="{{ image }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </main>
+{% endblock %}

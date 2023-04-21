@@ -1,0 +1,64 @@
+{% extends 'blank.html' %}
+{% block title %}AIPD{% endblock %}
+{% block header %}
+    <div class="collapse text-bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4>About</h4>
+                    <p class="text-body-secondary">This is a test website, not yet completed</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <h4>Pages</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="./" class="text-white">Home</a></li>
+                        <li><a href="./generate" class="text-white">Generate</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <img src="../static/brand/site-logo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    {% if g.user %}
+                        <li><a class="dropdown-item" disabled>{{ g.user['username'] }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Credits: {{ g.user['credits'] }}</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Log in</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% block content_base %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+    <div class="container">
+        <p class="float-end mb-1">
+            <a href="#">privacy</a>
+        </p>
+        <p class="mb-1">&copy; 2023 J. Zhu </p>
+    </div>
+{% endblock %}
+
+
