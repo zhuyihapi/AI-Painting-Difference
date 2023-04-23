@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
-
+{% block style %}
+    {{ super() }}
+    <style>
+        .card-text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+    </style>
+{% endblock %}
 {% block content_base %}
     <main>
         {#        Toasts#}

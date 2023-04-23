@@ -61,7 +61,7 @@ def generate():
                     for img in res:
                         images.append(img['url'])
             else:
-                error = "Insufficient credits!"
+                flash("Insufficient credits for DALLE2!")
 
             if error is not None:
                 flash(error)
@@ -84,9 +84,8 @@ def generate():
                     db.commit()
                 except db.IntegrityError:
                     error = "credits update error for SD"
-
             else:
-                error = "Insufficient credits!"
+                flash("Insufficient credits for Stable Diffusion!")
 
             if error is not None:
                 flash(error)
@@ -107,9 +106,8 @@ def generate():
                     db.commit()
                 except db.IntegrityError:
                     error = "credits update error for SK2"
-
-        else:
-            error = "Insufficient credits!"
+            else:
+                flash("Insufficient credits for KS2!")
 
         if error is not None:
             flash(error)
@@ -129,7 +127,7 @@ def generate():
                 error = "credits update error for DD"
 
         else:
-            error = "Insufficient credits!"
+            flash("Insufficient credits!")
 
         if error is not None:
             flash(error)
@@ -170,9 +168,8 @@ def create_image_dalle2(prompt, n, size):
             size=size,
         )
     except openai.error.OpenAIError as e:
-        # print(e.http_status)
-        # print(e.error)
-        flash('DALL E 2 returns an error! ' + e.error['message'], 'error')
+        flash(e.error['message'])
+        # flash('DALL E 2 returns an error! ' + e.error['message'])
         response = []
         return response
     return response['data']
