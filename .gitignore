@@ -1,4 +1,4 @@
-
+venv
 *.pyc
 __pycache__/
 instance/
@@ -29,3 +29,4 @@ docs/_build/
 Lib/
 Scripts/
 config.py
+FYP-log.md
