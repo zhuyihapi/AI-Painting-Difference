@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask, render_template, url_for, request, abort, redirect, flash
+from flask import Flask, render_template
 # from markupsafe import escape
 
 from waitress import serve
@@ -17,20 +17,15 @@ def create_app(test_config=None):
     )
 
     if test_config is None:
-        # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py')
-
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
-
-    # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    # functions
     from . import db
     db.init_app(app)
 
@@ -43,6 +38,10 @@ def create_app(test_config=None):
 
     from . import generate
     app.register_blueprint(generate.bp)
+
+    @app.route('/log')
+    def log():
+        return render_template('/log.html')
 
     # @app.route('/blank')
     # def blank():

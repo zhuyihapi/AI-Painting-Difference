@@ -13,6 +13,7 @@
                     <ul class="list-unstyled">
                         <li><a href="./" class="text-white">Home</a></li>
                         <li><a href="./generate" class="text-white">Generate</a></li>
+                        <li><a href="./log" class="text-white">Update Log</a></li>
                     </ul>
                 </div>
             </div>
@@ -27,12 +28,12 @@
                 </a>
                 <ul class="dropdown-menu text-small">
                     {% if g.user %}
-                        <li><a class="dropdown-item" disabled>{{ g.user['username'] }}</a></li>
+                        <li><a class="dropdown-item">{{ g.user['username'] }}</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Credits: {{ g.user['credits'] }}</a></li>
+                        <li><a class="dropdown-item">Credits: {{ g.user['credits'] }}</a></li>
                     {% else %}
                         <li><a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Log in</a></li>

@@ -2,6 +2,25 @@
 
 {% block content_base %}
     <main>
+        {#        Toasts#}
+        {% if g.user %}
+            <div aria-live="polite" aria-atomic="true" class="position-relative">
+                <div class="toast-container top-0 end-0 p-3">
+                    <div class="toast align-items-center show" role="alert" aria-live="assertive"
+                         aria-atomic="true" id="liveToast">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Log in successfully! Welcome, {{ g.user['username'] }}.
+                            </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
         <!-- title section -->
         <section class="py-5 text-center container">
             <div class="row py-lg-5">
@@ -206,6 +225,7 @@
                 </div>
             </div>
         </div>
+
 
     </main>
 {% endblock %}
