@@ -16,7 +16,13 @@ def register():
         password = request.form['password']
         db = get_db()
         error = None
+        # regular expression
+        # re.match("^(?:(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])).*$",pwd)==None:
+        # ^(?![A-Za-z]+$)(?![A-Z0-9]+$)(?![a-z0-9]+$)(?![a-z\W]+$)(?![A-Z\W]+$)(?![0-9\W]+$)[a-zA-Z0-9\W]{8,16}$
 
+        # if len(password) < 4:
+
+        #     error = "Password length must be greater than 4 characters"
         if not username:
             error = 'Username is required.'
         elif not password:

@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='flaskr',
-    version='1.2.1',
+    version='1.2.2',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
@@ -11,5 +11,7 @@ setup(
         'openai',
         'replicate',
         'waitress',
+        'pytest',
+        'coverage',
     ],
 )
