@@ -28,5 +28,5 @@ docs/_build/
 
 Lib/
 Scripts/
-config.py
+instance/config.py
 FYP-log.md.lnk
